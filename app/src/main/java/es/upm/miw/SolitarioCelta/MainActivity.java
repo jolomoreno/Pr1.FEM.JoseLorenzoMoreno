@@ -11,7 +11,9 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         mJuego = new JuegoCelta();
         mostrarTablero();
     }
@@ -71,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void onSaveInstanceState(Bundle outState) {
         outState.putString(CLAVE_TABLERO, mJuego.serializaTablero());
-        Log.i("JLMM", "SAVE GAME!: PASA por onSaveInstanceState");
         super.onSaveInstanceState(outState);
     }
 
@@ -102,31 +102,24 @@ public class MainActivity extends AppCompatActivity {
             case R.id.save:
                 saveGame();
                 return true;
+            case R.id.restore:
+                restoreGame();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     public void saveGame() {
-        Log.i("JLMM", "SAVE GAME!: Se va a guardar la partida");
         Bundle outputState = new Bundle();
         outputState.putString(CLAVE_TABLERO, mJuego.serializaTablero());
         String serializedGame = outputState.getString(CLAVE_TABLERO);
         saveGameInFile(serializedGame);
-        /* CARGA de Partida
-        mJuego.deserializaTablero("0011100001010011110011111111111111100111000011100");
-        mostrarTablero();
-        */
         Toast.makeText(this, getString(R.string.saveGameText), Toast.LENGTH_LONG).show();
-        Log.i("JLMM", "SAVE GAME!: Se ha guardado la partida");
     }
 
     public void saveGameInFile(String serializedGame){
-        Log.i("JLMM", "PARTIDA SERIALIZADA: " + serializedGame);
-        Log.i("JLMM", "NOMBRE FICHERO PARTIDA GUARDADA: " + SAVEDGAMEFILE);
-
         try {  // Añadir al fichero
             FileOutputStream fos;
-
             fos = openFileOutput(SAVEDGAMEFILE, Context.MODE_PRIVATE);
             fos.write(serializedGame.getBytes());
             fos.write('\n');
@@ -135,5 +128,49 @@ public class MainActivity extends AppCompatActivity {
             Log.e("JLMM", "FILE I/O ERROR: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    public void restoreGame() {
+        String serializedSavedGame = restoreGameOfFile();
+        mJuego.deserializaTablero(serializedSavedGame);
+        mostrarTablero();
+    }
+
+    public String restoreGameOfFile(){
+        boolean hayContenido = false;
+        BufferedReader fin;
+        String savedGame = "";
+        Bundle outputState = new Bundle();
+
+
+        try {
+            fin = new BufferedReader(
+                    new InputStreamReader(openFileInput(SAVEDGAMEFILE))); // Memoria interna
+            String linea = fin.readLine();
+            while (linea != null) {
+                hayContenido = true;
+                savedGame = linea;
+                linea = fin.readLine();
+            }
+            fin.close();
+        } catch (Exception e) {
+            Log.e("JLMM", "FILE I/O ERROR: " + e.getMessage());
+            e.printStackTrace();
+            outputState.putString(CLAVE_TABLERO, mJuego.serializaTablero());
+            savedGame = outputState.getString(CLAVE_TABLERO);
+            Toast.makeText(this, getString(R.string.failRestoreGameText), Toast.LENGTH_LONG).show();
+            return savedGame;
+        }
+
+        if(!hayContenido){
+            outputState.putString(CLAVE_TABLERO, mJuego.serializaTablero());
+            savedGame = outputState.getString(CLAVE_TABLERO);
+            Toast.makeText(this, getString(R.string.emptyFileRestoreGameText), Toast.LENGTH_LONG).show();
+            return savedGame;
+        }
+
+        Toast.makeText(this, getString(R.string.restoreGameText), Toast.LENGTH_LONG).show();
+
+        return savedGame;
     }
 }
