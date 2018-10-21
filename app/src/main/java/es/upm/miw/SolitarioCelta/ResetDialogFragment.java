@@ -21,7 +21,7 @@ public class ResetDialogFragment extends DialogFragment {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                // Log.i("MiW", "REINICIO PARTIDA: Se reinicia la partida");
+                                // Log.i("JLMM", "REINICIO PARTIDA: Se reinicia la partida");
                                 main.mJuego.reiniciar();
                                 main.mostrarTablero();
                             }
@@ -32,7 +32,7 @@ public class ResetDialogFragment extends DialogFragment {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                // Log.i("MiW", "REINICIO PARTIDA: Se sigue jugando");
+                                // Log.i("JLMM", "REINICIO PARTIDA: Se sigue jugando");
                             }
                         }
                 );

@@ -12,6 +12,8 @@
     <string name="secondCategoryPrefTitle">Ajustes del juego</string>
     <string name="preferencesText">Ajustes</string>
     <string name="resetText">Reiniciar</string>
+    <string name="saveText">Guardar</string>
+    <string name="saveGameText">Partida guardada</string>
 
     <!-- Diálogo Final -->
     <string name="txtDialogoFinalTitulo">Fin del juego</string>
@@ -19,7 +21,7 @@
     <string name="txtDialogoFinalAfirmativo">Sí</string>
     <string name="txtDialogoFinalNegativo">No</string>
 
-    <!-- Diálogo Final -->
+    <!-- Diálogo Reset -->
     <string name="txtDialogoResetTitulo">Reiniciar partida</string>
     <string name="txtDialogoResetPregunta">¿Quiere reiniciar la partida?</string>
 
