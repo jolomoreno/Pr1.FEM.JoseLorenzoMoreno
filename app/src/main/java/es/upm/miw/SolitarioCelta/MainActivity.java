@@ -3,6 +3,7 @@ package es.upm.miw.SolitarioCelta;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -89,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
             case R.id.preferences:
                 startActivity(new Intent(this, SCeltaPreferences.class));
                 return true;
+            case R.id.reset:
+                new ResetDialogFragment().show(getFragmentManager(), "ALERT DIALOG");
         }
         return super.onOptionsItemSelected(item);
     }
