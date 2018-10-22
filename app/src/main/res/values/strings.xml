@@ -18,6 +18,7 @@
     <string name="restoreGameText">Partida cargada</string>
     <string name="failRestoreGameText">Error al cargar la partida</string>
     <string name="emptyFileRestoreGameText">No existe ninguna partida guardada</string>
+    <string name="saveScoreText">Puntuación almacenada</string>
 
     <!-- Diálogo Final -->
     <string name="txtDialogoFinalTitulo">Fin del juego</string>

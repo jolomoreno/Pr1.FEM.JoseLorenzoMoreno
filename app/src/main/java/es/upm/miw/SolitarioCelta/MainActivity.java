@@ -2,7 +2,9 @@ package es.upm.miw.SolitarioCelta;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -14,12 +16,17 @@ import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
 	JuegoCelta mJuego;
     private final String CLAVE_TABLERO = "TABLERO_SOLITARIO_CELTA";
     private final String SAVEDGAMEFILE = "savedGameFile.txt";
+    private int puntuacion = 0;
+    SharedPreferences preferencias;
 
 	private final int[][] ids = {
 		{       0,        0, R.id.p02, R.id.p03, R.id.p04,        0,        0},
@@ -36,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mJuego = new JuegoCelta();
         mostrarTablero();
+        preferencias = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
     /**
@@ -52,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
         mostrarTablero();
         if (mJuego.juegoTerminado()) {
+            guardarPuntuacion();
             new AlertDialogFragment().show(getFragmentManager(), "ALERT DIALOG");
         }
     }
@@ -172,5 +181,37 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, getString(R.string.restoreGameText), Toast.LENGTH_LONG).show();
 
         return savedGame;
+    }
+
+    public int obtenerPuntuacion(){
+        int puntuacion = 0;
+
+        for (int i = 0; i < JuegoCelta.TAMANIO; i++){
+            for (int j = 0; j < JuegoCelta.TAMANIO; j++){
+                puntuacion = puntuacion + mJuego.obtenerFicha(i,j);
+            }
+        }
+        return puntuacion;
+    }
+
+    public String obtenerFecha(){
+        Date fechaActual = new Date();
+        //Formateando la fecha:
+        DateFormat formatoHora = new SimpleDateFormat("HH:mm:ss");
+        DateFormat formatoFecha = new SimpleDateFormat("dd-MM-yyyy");
+        return (formatoHora.format(fechaActual)+" "+formatoFecha.format(fechaActual));
+    }
+
+    public String obtenerNombreJugador(){
+        return preferencias.getString("playerName", "Jugador 1");
+    }
+
+    public void guardarPuntuacion(){
+        puntuacion = obtenerPuntuacion();
+        Log.i("JLMM", String.valueOf(puntuacion));
+        String playerName = obtenerNombreJugador();
+        Log.i("JLMM", playerName);
+        String fecha = obtenerFecha();
+        Log.i("JLMM", fecha);
     }
 }
