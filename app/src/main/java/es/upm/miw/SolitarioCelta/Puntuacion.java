@@ -4,21 +4,23 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Puntuacion implements Parcelable {
-    private String id;
+    private int id;
     private String nombreJugador;
     private String fecha;
+    private String puntuacion;
 
-    protected Puntuacion(Parcel in) {
-        id = in.readString();
-        nombreJugador = in.readString();
-        fecha = in.readString();
+    public Puntuacion(int id, String nombreJugador, String fecha, String puntuacion) {
+        this.id = id;
+        this.nombreJugador = nombreJugador;
+        this.fecha = fecha;
+        this.puntuacion = puntuacion;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -38,12 +40,21 @@ public class Puntuacion implements Parcelable {
         this.fecha = fecha;
     }
 
+    public String getPuntuacion() {
+        return puntuacion;
+    }
+
+    public void setPuntuacion(String puntuacion) {
+        this.puntuacion = puntuacion;
+    }
+
     @Override
     public String toString() {
         return "Puntuacion{" +
                 "id='" + id + '\'' +
                 ", nombreJugador='" + nombreJugador + '\'' +
                 ", fecha='" + fecha + '\'' +
+                ", puntuacion='" + puntuacion + '\'' +
                 '}';
     }
 
@@ -54,9 +65,17 @@ public class Puntuacion implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(nombreJugador);
-        dest.writeString(fecha);
+        dest.writeInt(this.id);
+        dest.writeString(this.nombreJugador);
+        dest.writeString(this.fecha);
+        dest.writeString(this.puntuacion);
+    }
+
+    protected Puntuacion(Parcel in) {
+        this.id = in.readInt();
+        this.nombreJugador = in.readString();
+        this.fecha = in.readString();
+        this.puntuacion = in.readString();
     }
 
     @SuppressWarnings("unused")

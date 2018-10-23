@@ -2,10 +2,16 @@ package es.upm.miw.SolitarioCelta;
 
 import android.provider.BaseColumns;
 
-public class PuntuacionContract implements BaseColumns {
+final public class PuntuacionContract {
 
-        public static final String TABLE_NAME ="puntuaciones";
-        public static final String ID = "id";
-        public static final String NOMBRE = "nombreJugador";
-        public static final String FECHA = "fecha";
+        private PuntuacionContract() {}
+        public static abstract class tablaPuntuacion implements BaseColumns {
+
+                public static final String TABLE_NAME = "puntuaciones";
+
+                public static final String COL_NAME_ID = _ID;
+                public static final String COL_NAME_NOMBRE = "nombreJugador";
+                public static final String COL_NAME_FECHA = "fecha";
+                public static final String COL_NAME_PUNTUACION = "puntuacion";
+        }
 }

@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
@@ -27,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
     private final String SAVEDGAMEFILE = "savedGameFile.txt";
     private int puntuacion = 0;
     SharedPreferences preferencias;
+    PuntuacionRepositorio db;
+    ArrayList<Puntuacion> puntuaciones;
 
 	private final int[][] ids = {
 		{       0,        0, R.id.p02, R.id.p03, R.id.p04,        0,        0},
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         mJuego = new JuegoCelta();
         mostrarTablero();
         preferencias = PreferenceManager.getDefaultSharedPreferences(this);
+        db = new PuntuacionRepositorio(getApplicationContext());
     }
 
     /**
@@ -62,6 +66,10 @@ public class MainActivity extends AppCompatActivity {
         if (mJuego.juegoTerminado()) {
             guardarPuntuacion();
             new AlertDialogFragment().show(getFragmentManager(), "ALERT DIALOG");
+            puntuaciones = db.getAll();
+            Log.i("JLMM", "Puntuaciones => " + puntuaciones);
+            long numElementos = db.count();
+            Log.i("JLMM", "Número elementos = " + String.valueOf(numElementos));
         }
     }
 
@@ -208,10 +216,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void guardarPuntuacion(){
         puntuacion = obtenerPuntuacion();
-        Log.i("JLMM", String.valueOf(puntuacion));
+        // Log.i("JLMM", String.valueOf(puntuacion));
         String playerName = obtenerNombreJugador();
-        Log.i("JLMM", playerName);
+        // Log.i("JLMM", playerName);
         String fecha = obtenerFecha();
-        Log.i("JLMM", fecha);
+        // Log.i("JLMM", fecha);
+
+        long id = db.add(playerName, fecha, String.valueOf(puntuacion));
+        Log.i("JLMM", "Id Puntuacion = " + String.valueOf(id));
     }
 }
