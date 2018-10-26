@@ -34,7 +34,7 @@ public class PuntuacionRepositorio extends SQLiteOpenHelper {
         db.execSQL(consultaSQL);
     }
 
-
+    // RESET INFO TABLE
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         /* String consultaSQL = "DROP TABLE IF EXISTS " + tablaPuntuacion.TABLE_NAME;

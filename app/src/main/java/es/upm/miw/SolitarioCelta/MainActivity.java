@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences preferencias;
     PuntuacionRepositorio db;
     ArrayList<Puntuacion> puntuaciones;
+    TextView result;
 
 	private final int[][] ids = {
 		{       0,        0, R.id.p02, R.id.p03, R.id.p04,        0,        0},
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        result = (TextView) findViewById(R.id.textNumFichas);
         mJuego = new JuegoCelta();
         mostrarTablero();
         preferencias = PreferenceManager.getDefaultSharedPreferences(this);
@@ -59,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
         String resourceName = getResources().getResourceEntryName(v.getId());
         int i = resourceName.charAt(1) - '0';
         int j = resourceName.charAt(2) - '0';
-
         mJuego.jugar(i, j);
 
         mostrarTablero();
@@ -78,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public void mostrarTablero() {
         RadioButton button;
-
+        result.setText(String.valueOf(obtenerPuntuacion()));
         for (int i = 0; i < JuegoCelta.TAMANIO; i++)
             for (int j = 0; j < JuegoCelta.TAMANIO; j++)
                 if (ids[i][j] != 0) {
@@ -224,5 +226,11 @@ public class MainActivity extends AppCompatActivity {
 
         long id = db.add(playerName, fecha, String.valueOf(puntuacion));
         Log.i("JLMM", "Id Puntuacion = " + String.valueOf(id));
+    }
+
+    @Override
+    protected void onDestroy() {
+        db.close();
+        super.onDestroy();
     }
 }
