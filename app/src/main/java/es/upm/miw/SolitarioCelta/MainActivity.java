@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     PuntuacionRepositorio db;
     ArrayList<Puntuacion> puntuaciones;
     TextView result;
+    TextView nombreJugador;
+    String nombre;
 
 	private final int[][] ids = {
 		{       0,        0, R.id.p02, R.id.p03, R.id.p04,        0,        0},
@@ -46,11 +48,15 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        preferencias = PreferenceManager.getDefaultSharedPreferences(this);
         result = (TextView) findViewById(R.id.textNumFichas);
+        nombreJugador = (TextView) findViewById(R.id.textNombreJugador);
         mJuego = new JuegoCelta();
         mostrarTablero();
-        preferencias = PreferenceManager.getDefaultSharedPreferences(this);
         db = new PuntuacionRepositorio(getApplicationContext());
+        nombre = obtenerNombreJugador();
+        nombreJugador.setText(nombre);
+        Log.i("JLMM", "Nombre jugador (onCreate):" + nombre);
     }
 
     /**
@@ -81,6 +87,10 @@ public class MainActivity extends AppCompatActivity {
     public void mostrarTablero() {
         RadioButton button;
         result.setText(String.valueOf(obtenerPuntuacion()));
+        nombre = obtenerNombreJugador();
+        nombreJugador.setText(nombre);
+        Log.i("JLMM", "Nombre Jugador (Mostrar Tablero): " + nombre);
+        // String nombre = obtenerNombreJugador();
         for (int i = 0; i < JuegoCelta.TAMANIO; i++)
             for (int j = 0; j < JuegoCelta.TAMANIO; j++)
                 if (ids[i][j] != 0) {
