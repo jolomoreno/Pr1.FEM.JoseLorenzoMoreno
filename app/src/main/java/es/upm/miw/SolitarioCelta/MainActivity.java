@@ -51,11 +51,11 @@ public class MainActivity extends AppCompatActivity {
         preferencias = PreferenceManager.getDefaultSharedPreferences(this);
         result = (TextView) findViewById(R.id.textNumFichas);
         nombreJugador = (TextView) findViewById(R.id.textNombreJugador);
+        nombre = obtenerNombreJugador();
+        nombreJugador.setText(nombre);
         mJuego = new JuegoCelta();
         mostrarTablero();
         db = new PuntuacionRepositorio(getApplicationContext());
-        nombre = obtenerNombreJugador();
-        nombreJugador.setText(nombre);
         Log.i("JLMM", "Nombre jugador (onCreate):" + nombre);
     }
 
