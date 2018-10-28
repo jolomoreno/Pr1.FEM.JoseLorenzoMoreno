@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
         mJuego = new JuegoCelta();
         mostrarTablero();
         db = new PuntuacionRepositorio(getApplicationContext());
-        Log.i("JLMM", "Nombre jugador (onCreate):" + nombre);
     }
 
     /**
@@ -74,10 +73,6 @@ public class MainActivity extends AppCompatActivity {
         if (mJuego.juegoTerminado()) {
             guardarPuntuacion();
             new AlertDialogFragment().show(getFragmentManager(), "ALERT DIALOG");
-            puntuaciones = db.getAll();
-            Log.i("JLMM", "Puntuaciones => " + puntuaciones);
-            long numElementos = db.count();
-            Log.i("JLMM", "Número elementos = " + String.valueOf(numElementos));
         }
     }
 
@@ -89,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
         result.setText(String.valueOf(obtenerPuntuacion()));
         nombre = obtenerNombreJugador();
         nombreJugador.setText(nombre);
-        Log.i("JLMM", "Nombre Jugador (Mostrar Tablero): " + nombre);
         // String nombre = obtenerNombreJugador();
         for (int i = 0; i < JuegoCelta.TAMANIO; i++)
             for (int j = 0; j < JuegoCelta.TAMANIO; j++)
@@ -134,8 +128,27 @@ public class MainActivity extends AppCompatActivity {
             case R.id.restore:
                 restoreGame();
                 return true;
+            case R.id.bestPlayers:
+                bestPlayers();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    public void bestPlayers() {
+        Intent intent = new Intent(getApplicationContext(), MejoresJugadores.class);
+        ArrayList<Puntuacion> puntuaciones = new ArrayList<Puntuacion>();
+        puntuaciones = db.getAll();
+
+        if (puntuaciones.isEmpty()) {
+            Toast.makeText(this, getString(R.string.emptyPlayersText), Toast.LENGTH_LONG).show();
+        }else{
+            Log.i("JLMM", "Puntuaciones => " + puntuaciones);
+            long numElementos = db.count();
+            Log.i("JLMM", "Número elementos = " + String.valueOf(numElementos));
+
+            intent.putParcelableArrayListExtra("puntuaciones", puntuaciones);
+            startActivity(intent);
+        }
     }
 
     public void saveGame() {
@@ -228,14 +241,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void guardarPuntuacion(){
         puntuacion = obtenerPuntuacion();
-        // Log.i("JLMM", String.valueOf(puntuacion));
         String playerName = obtenerNombreJugador();
-        // Log.i("JLMM", playerName);
         String fecha = obtenerFecha();
-        // Log.i("JLMM", fecha);
-
         long id = db.add(playerName, fecha, String.valueOf(puntuacion));
-        Log.i("JLMM", "Id Puntuacion = " + String.valueOf(id));
+        Log.i("JLMM", "Id Puntuacion guardada= " + String.valueOf(id));
     }
 
     @Override

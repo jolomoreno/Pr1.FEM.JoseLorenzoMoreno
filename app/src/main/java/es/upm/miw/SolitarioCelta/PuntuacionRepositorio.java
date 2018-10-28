@@ -66,7 +66,7 @@ public class PuntuacionRepositorio extends SQLiteOpenHelper {
 
     // GET ALL
     public ArrayList<Puntuacion> getAll() {
-        String consultaSQL = "SELECT * FROM " + tablaPuntuacion.TABLE_NAME;
+        String consultaSQL = "SELECT * FROM " + tablaPuntuacion.TABLE_NAME + " order by puntuacion asc";
         ArrayList<Puntuacion> listaPuntuaciones = new ArrayList<>();
 
         // Accedo a la DB en modo lectura
