@@ -66,7 +66,7 @@ public class PuntuacionRepositorio extends SQLiteOpenHelper {
 
     // GET ALL
     public ArrayList<Puntuacion> getAll() {
-        String consultaSQL = "SELECT * FROM " + tablaPuntuacion.TABLE_NAME + " order by puntuacion asc";
+        String consultaSQL = "SELECT * FROM " + tablaPuntuacion.TABLE_NAME + " order by puntuacion asc limit 10";
         ArrayList<Puntuacion> listaPuntuaciones = new ArrayList<>();
 
         // Accedo a la DB en modo lectura
@@ -91,5 +91,12 @@ public class PuntuacionRepositorio extends SQLiteOpenHelper {
         db.close();
 
         return listaPuntuaciones;
+    }
+
+    // DELETE ALL
+    public void deleteAll() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("delete from "+ tablaPuntuacion.TABLE_NAME);
     }
 }

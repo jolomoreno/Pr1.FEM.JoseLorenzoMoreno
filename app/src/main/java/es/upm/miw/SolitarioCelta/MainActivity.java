@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void bestPlayers() {
         Intent intent = new Intent(getApplicationContext(), MejoresJugadores.class);
-        ArrayList<Puntuacion> puntuaciones = new ArrayList<Puntuacion>();
+        ArrayList<Puntuacion> puntuaciones;
         puntuaciones = db.getAll();
 
         if (puntuaciones.isEmpty()) {
@@ -145,7 +145,6 @@ public class MainActivity extends AppCompatActivity {
             Log.i("JLMM", "Puntuaciones => " + puntuaciones);
             long numElementos = db.count();
             Log.i("JLMM", "Número elementos = " + String.valueOf(numElementos));
-
             intent.putParcelableArrayListExtra("puntuaciones", puntuaciones);
             startActivity(intent);
         }

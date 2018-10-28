@@ -13,20 +13,14 @@
         android:layout_weight="0.05"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/cabeceraId"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.20"
-            android:text="@string/headerId" />
 
         <TextView
             android:id="@+id/cabeceraNombre"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.60"
-            android:text="@string/headerNombre"
-            />
+            android:layout_weight="0.40"
+            android:gravity="center"
+            android:text="@string/headerNombre" />
 
         <TextView
             android:id="@+id/cabeceraPuntuacion"
@@ -35,6 +29,13 @@
             android:layout_weight="0.20"
             android:text="@string/headerPuntuacion" />
 
+        <TextView
+            android:id="@+id/cabeceraFecha"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.40"
+            android:gravity="center"
+            android:text="@string/headerFecha" />
     </LinearLayout>
 
     <ListView
@@ -44,5 +45,20 @@
         android:layout_weight="0.75">
 
     </ListView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.10"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/borrarPuntuaciones"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.50"
+            android:text="@string/borrarPuntuacionesText"
+            />
+    </LinearLayout>
 
 </LinearLayout>

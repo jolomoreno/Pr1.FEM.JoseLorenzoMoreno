@@ -14,12 +14,13 @@
     <string name="resetText">Reiniciar</string>
     <string name="saveText">Guardar</string>
     <string name="restoreText">Cargar</string>
-    <string name="bestPlayersText">Mejores Jugadores</string>
+    <string name="bestPlayersText">Mejores jugadores</string>
+    <string name="borrarPuntuacionesText">Borrar puntuaciones</string>
     <string name="emptyPlayersText">No existe ninguna puntuación guardada</string>
 
-    <string name="headerId">Id</string>
     <string name="headerNombre">Jugador</string>
     <string name="headerPuntuacion">Puntuación</string>
+    <string name="headerFecha">Fecha</string>
 
     <string name="saveGameText">Partida guardada</string>
     <string name="restoreGameText">Partida cargada</string>
@@ -39,4 +40,8 @@
     <string name="txtDialogoResetTitulo">Reiniciar partida</string>
     <string name="txtDialogoResetPregunta">¿Quiere reiniciar la partida?</string>
 
+    <!-- Diálogo Delete Puntuaciones -->
+    <string name="txtDialogoDeleteTitulo">Borrar puntuaciones</string>
+    <string name="txtDialogoDeletePregunta">¿Quiere borrar todas las mejores puntuaciones?</string>
+    <string name="deletePuntuacionesText">Las mejores puntuaciones han sido eliminadas</string>
 </resources>

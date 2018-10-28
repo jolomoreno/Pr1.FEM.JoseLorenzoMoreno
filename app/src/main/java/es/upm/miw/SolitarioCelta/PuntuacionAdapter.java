@@ -34,16 +34,21 @@ public class PuntuacionAdapter extends ArrayAdapter {
             vista = (LinearLayout) inflador.inflate(idRecursoLayout, parent, false);
         }
 
-        // Asignamos datos a los elementos de la vista
         Puntuacion puntuacion = this.puntuaciones.get(position);
-        TextView itemId = (TextView) vista.findViewById(R.id.itemId);
-        itemId.setText(String.valueOf(puntuacion.getId()));
 
         TextView itemNombre = (TextView) vista.findViewById(R.id.itemNombre);
         itemNombre.setText(puntuacion.getNombreJugador());
 
         TextView itemPuntuacion = (TextView) vista.findViewById(R.id.itemPuntuacion);
         itemPuntuacion.setText(String.valueOf(puntuacion.getPuntuacion()));
+
+        TextView itemId = (TextView) vista.findViewById(R.id.itemFecha);
+        String[] diaMesAnnio = puntuacion.getFecha().split(" ");
+        itemId.setText(diaMesAnnio[1]);
+
+
+
+
 
         return vista;
     }
