@@ -1,17 +1,39 @@
 package es.upm.miw.SolitarioCelta;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioButton;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.BufferedReader;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
 	JuegoCelta mJuego;
     private final String CLAVE_TABLERO = "TABLERO_SOLITARIO_CELTA";
+    private final String SAVEDGAMEFILE = "savedGameFile.txt";
+    private int puntuacion = 0;
+    SharedPreferences preferencias;
+    PuntuacionRepositorio db;
+    ArrayList<Puntuacion> puntuaciones;
+    TextView result;
+    TextView nombreJugador;
+    String nombre;
 
 	private final int[][] ids = {
 		{       0,        0, R.id.p02, R.id.p03, R.id.p04,        0,        0},
@@ -26,9 +48,14 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        preferencias = PreferenceManager.getDefaultSharedPreferences(this);
+        result = (TextView) findViewById(R.id.textNumFichas);
+        nombreJugador = (TextView) findViewById(R.id.textNombreJugador);
+        nombre = obtenerNombreJugador();
+        nombreJugador.setText(nombre);
         mJuego = new JuegoCelta();
         mostrarTablero();
+        db = new PuntuacionRepositorio(getApplicationContext());
     }
 
     /**
@@ -40,11 +67,11 @@ public class MainActivity extends AppCompatActivity {
         String resourceName = getResources().getResourceEntryName(v.getId());
         int i = resourceName.charAt(1) - '0';
         int j = resourceName.charAt(2) - '0';
-
         mJuego.jugar(i, j);
 
         mostrarTablero();
         if (mJuego.juegoTerminado()) {
+            guardarPuntuacion();
             new AlertDialogFragment().show(getFragmentManager(), "ALERT DIALOG");
         }
     }
@@ -54,7 +81,10 @@ public class MainActivity extends AppCompatActivity {
      */
     public void mostrarTablero() {
         RadioButton button;
-
+        result.setText(String.valueOf(obtenerPuntuacion()));
+        nombre = obtenerNombreJugador();
+        nombreJugador.setText(nombre);
+        // String nombre = obtenerNombreJugador();
         for (int i = 0; i < JuegoCelta.TAMANIO; i++)
             for (int j = 0; j < JuegoCelta.TAMANIO; j++)
                 if (ids[i][j] != 0) {
@@ -89,7 +119,136 @@ public class MainActivity extends AppCompatActivity {
             case R.id.preferences:
                 startActivity(new Intent(this, SCeltaPreferences.class));
                 return true;
+            case R.id.reset:
+                new ResetDialogFragment().show(getFragmentManager(), "ALERT DIALOG");
+                return true;
+            case R.id.save:
+                saveGame();
+                return true;
+            case R.id.restore:
+                restoreGame();
+                return true;
+            case R.id.bestPlayers:
+                bestPlayers();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    public void bestPlayers() {
+        Intent intent = new Intent(getApplicationContext(), MejoresJugadores.class);
+        ArrayList<Puntuacion> puntuaciones;
+        puntuaciones = db.getAll();
+
+        if (puntuaciones.isEmpty()) {
+            Toast.makeText(this, getString(R.string.emptyPlayersText), Toast.LENGTH_LONG).show();
+        }else{
+            Log.i("JLMM", "Puntuaciones => " + puntuaciones);
+            long numElementos = db.count();
+            Log.i("JLMM", "Número elementos = " + String.valueOf(numElementos));
+            intent.putParcelableArrayListExtra("puntuaciones", puntuaciones);
+            startActivity(intent);
+        }
+    }
+
+    public void saveGame() {
+        Bundle outputState = new Bundle();
+        outputState.putString(CLAVE_TABLERO, mJuego.serializaTablero());
+        String serializedGame = outputState.getString(CLAVE_TABLERO);
+        saveGameInFile(serializedGame);
+        Toast.makeText(this, getString(R.string.saveGameText), Toast.LENGTH_LONG).show();
+    }
+
+    public void saveGameInFile(String serializedGame){
+        try {  // Añadir al fichero
+            FileOutputStream fos;
+            fos = openFileOutput(SAVEDGAMEFILE, Context.MODE_PRIVATE);
+            fos.write(serializedGame.getBytes());
+            fos.write('\n');
+            fos.close();
+        } catch (Exception e) {
+            Log.e("JLMM", "FILE I/O ERROR: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void restoreGame() {
+        String serializedSavedGame = restoreGameOfFile();
+        mJuego.deserializaTablero(serializedSavedGame);
+        mostrarTablero();
+    }
+
+    public String restoreGameOfFile(){
+        boolean hayContenido = false;
+        BufferedReader fin;
+        String savedGame = "";
+        Bundle outputState = new Bundle();
+
+
+        try {
+            fin = new BufferedReader(
+                    new InputStreamReader(openFileInput(SAVEDGAMEFILE))); // Memoria interna
+            String linea = fin.readLine();
+            while (linea != null) {
+                hayContenido = true;
+                savedGame = linea;
+                linea = fin.readLine();
+            }
+            fin.close();
+        } catch (Exception e) {
+            Log.e("JLMM", "FILE I/O ERROR: " + e.getMessage());
+            e.printStackTrace();
+            outputState.putString(CLAVE_TABLERO, mJuego.serializaTablero());
+            savedGame = outputState.getString(CLAVE_TABLERO);
+            Toast.makeText(this, getString(R.string.failRestoreGameText), Toast.LENGTH_LONG).show();
+            return savedGame;
+        }
+
+        if(!hayContenido){
+            outputState.putString(CLAVE_TABLERO, mJuego.serializaTablero());
+            savedGame = outputState.getString(CLAVE_TABLERO);
+            Toast.makeText(this, getString(R.string.emptyFileRestoreGameText), Toast.LENGTH_LONG).show();
+            return savedGame;
+        }
+
+        Toast.makeText(this, getString(R.string.restoreGameText), Toast.LENGTH_LONG).show();
+
+        return savedGame;
+    }
+
+    public int obtenerPuntuacion(){
+        int puntuacion = 0;
+
+        for (int i = 0; i < JuegoCelta.TAMANIO; i++){
+            for (int j = 0; j < JuegoCelta.TAMANIO; j++){
+                puntuacion = puntuacion + mJuego.obtenerFicha(i,j);
+            }
+        }
+        return puntuacion;
+    }
+
+    public String obtenerFecha(){
+        Date fechaActual = new Date();
+        //Formateando la fecha:
+        DateFormat formatoHora = new SimpleDateFormat("HH:mm:ss");
+        DateFormat formatoFecha = new SimpleDateFormat("dd-MM-yyyy");
+        return (formatoHora.format(fechaActual)+" "+formatoFecha.format(fechaActual));
+    }
+
+    public String obtenerNombreJugador(){
+        return preferencias.getString("playerName", "Jugador 1");
+    }
+
+    public void guardarPuntuacion(){
+        puntuacion = obtenerPuntuacion();
+        String playerName = obtenerNombreJugador();
+        String fecha = obtenerFecha();
+        long id = db.add(playerName, fecha, String.valueOf(puntuacion));
+        Log.i("JLMM", "Id Puntuacion guardada= " + String.valueOf(id));
+    }
+
+    @Override
+    protected void onDestroy() {
+        db.close();
+        super.onDestroy();
     }
 }

@@ -26,7 +26,6 @@ Partiendo del proyecto Solitario Celta, se deberá continuar con el desarrollo d
 * Esta opción mostrará el histórico con los mejores resultados obtenidos ordenados por número de piezas. Incluirá una opción -con confirmación- para eliminar todos los resultados guardados.
 
 #### OPCIONAL
-* Se propone mostrar el número de fichas que quedan en el tablero, añadir un cronómetro a la partida (y/o guardar el tiempo empleado), permitir guardar más de una partida, filtrar los mejores resultados por número de fichas o por jugador, añadir preferencias para modificar los colores empleados por la app, etc.
+* Se ha propuesto: Mostrar el número de fichas que quedan en el tablero y mostrar el nombre del jugador en la pantalla principal del juego.
 
-
-##### Autor: Jose Lorenzo Moreno U.P.M.
+##### Autor: Jose Lorenzo Moreno - U.P.M.
